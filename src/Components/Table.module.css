@@ -1,0 +1,136 @@
+table {
+	width: 100%;
+}
+
+.nbu_br {
+	display: none;
+}
+
+.color {
+	background: #3681c1;
+}
+
+@media screen and (min-width: 990px) {
+	.header * {
+		width: 20%;
+	}
+	.header {
+		display: flex;
+		justify-items: stretch;
+		color: white;
+		background: #3c87c8;
+	}
+	.c_banner {
+		font-size: 17px;
+		font-weight: normal;
+		margin-bottom: 10px;
+		width: 100%;
+	}
+	.first {
+		padding: 11px 15px;
+	}
+	.day,
+	.month,
+	.year {
+		font-size: 14px;
+		line-height: 14px;
+		font-weight: normal;
+	}
+	.month {
+		text-transform: capitalize;
+	}
+	.money {
+		opacity: 0.2;
+		font-weight: bold;
+		font-size: 40px;
+		line-height: 30px;
+		margin-bottom: 10px;
+	}
+	.nbu_number {
+		font-size: 14px;
+		line-height: 14px;
+		font-weight: normal;
+	}
+	.nbu {
+		font-size: 14px;
+		font-weight: normal;
+		opacity: 0.5;
+		margin: 0;
+	}
+	.block {
+		padding-left: 2.25%;
+		padding-top: 5px;
+	}
+}
+
+@media screen and (min-width: 1300px) {
+	.header * {
+		width: 20%;
+	}
+	.header {
+		display: flex;
+		justify-items: stretch;
+		color: white;
+		background: #3c87c8;
+	}
+	.first {
+		padding: 25px 2.25%;
+	}
+
+	.money {
+		font-size: 72px;
+		line-height: 50px;
+		opacity: 0.2;
+		font-weight: bold;
+		margin-bottom: 30px;
+	}
+
+	.block {
+		padding-left: 2.25%;
+		padding-top: 10px;
+	}
+
+	.c_banner {
+		font-weight: normal;
+		font-size: 24px;
+		margin-bottom: 20px;
+		width: 100%;
+	}
+
+	.day {
+		font-size: 51px;
+		font-weight: bold;
+		line-height: 51px;
+	}
+
+	.month,
+	.year {
+		font-size: 27px;
+		font-weight: bold;
+		line-height: 27px;
+		text-transform: uppercase;
+	}
+
+	.day,
+	.month,
+	.year {
+		display: block;
+	}
+
+	.nbu {
+		display: block;
+		font-size: 27px;
+		font-weight: bold;
+		opacity: 0.5;
+	}
+
+	.nbu_number {
+		color: white;
+		font-size: 72px;
+		line-height: 50px;
+		font-weight: bold;
+	}
+	.nbu_br {
+		display: inline-block;
+	}
+}
