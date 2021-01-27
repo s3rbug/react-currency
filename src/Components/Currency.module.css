@@ -1,0 +1,38 @@
+.wrapper > div {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    color: #555;
+    border-top: 1px solid #e6e6e6;
+}
+
+@media screen and (max-width: 990px) {
+    .wrapper > div {
+        padding-top: 15px;
+        font-weight: normal;
+        font-size: 15px;
+        height: 59px;
+    }
+    .wrapper > div:nth-child(2n) {
+        text-align: right;
+        padding-right: 15px;
+    }
+}
+
+@media screen and (min-width: 990px) {
+    .wrapper > div {
+        font-weight: normal;
+        font-size: 15px;
+        height: 67px;
+        padding-top: 20px;
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    .wrapper > div {
+        font-weight: bold;
+        font-size: 20px;
+        height: 97px;
+        padding-top: 34.5px;
+    }
+}

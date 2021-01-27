@@ -1,136 +1,273 @@
-table {
-	width: 100%;
-}
-
-.nbu_br {
-	display: none;
-}
-
 .color {
-	background: #3681c1;
+    background: #3681c1;
+}
+
+.header * {
+    text-align: left;
+}
+
+.block,
+.first {
+    color: white;
+}
+
+.highlight {
+    background-color: #f2f2f2;
+}
+
+.table {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.first {
+    grid-area: f;
+}
+
+.table div:nth-child(2) {
+    grid-area: usd;
+}
+
+.table div:nth-child(3) {
+    grid-area: eur;
+}
+
+.table div:nth-child(4) {
+    grid-area: pln;
+}
+
+.table div:nth-child(5) {
+    grid-area: gbp;
+}
+
+.content_usd {
+    grid-area: c-usd;
+}
+.content_eur {
+    grid-area: c-eur;
+}
+.content_pln {
+    grid-area: c-pln;
+}
+.content_gbp {
+    grid-area: c-gbp;
+}
+
+.sort_usd {
+    grid-area: s-usd;
+}
+.sort_eur {
+    grid-area: s-eur;
+}
+.sort_pln {
+    grid-area: s-pln;
+}
+.sort_gbp {
+    grid-area: s-gbp;
+}
+
+.header_usd {
+    grid-area: h-usd;
+}
+.header_eur {
+    display: none;
+    grid-area: h-eur;
+}
+.header_pln {
+    display: none;
+    grid-area: h-pln;
+}
+.header_gbp {
+    display: none;
+    grid-area: h-gbp;
+}
+
+@media screen and (max-width: 990px) {
+    .highlight {
+        background: #fff;
+    }
+    .header_eur,
+    .header_pln,
+    .header_gbp {
+        display: block;
+    }
+    .table {
+        margin-top: 40px;
+        grid-template-areas:
+            "f f f f f"
+            "usd usd usd usd usd"
+            ". . . s-usd s-usd"
+            "h-usd h-usd h-usd c-usd c-usd"
+            "eur eur eur eur eur"
+            ". . . s-eur s-eur"
+            "h-eur h-eur h-eur c-eur c-eur"
+            "pln pln pln pln pln"
+            ". . . s-pln s-pln"
+            "h-pln h-pln h-pln c-pln c-pln"
+            "gbp gbp gbp gbp gbp"
+            ". . . s-gbp s-gbp"
+            "h-gbp h-gbp h-gbp c-gbp c-gbp";
+    }
+
+    .block {
+        display: grid;
+        grid-template-columns: 3fr 1fr 1fr;
+        background: #3c87c8;
+        padding: 8px 15px;
+    }
+
+    .nbu {
+        text-align: center;
+    }
+
+    .nbu_number {
+        text-align: right;
+    }
+
+    .money {
+        display: inline;
+    }
+
+    .c_banner {
+        font-size: 17px;
+        flex-grow: 1;
+    }
+
+    .month {
+        text-transform: capitalize;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+    .first * {
+        font-weight: normal;
+    }
+    .first {
+        display: flex;
+        position: fixed;
+        height: 40px;
+        background: #337ab7;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 8px 15px;
+    }
 }
 
 @media screen and (min-width: 990px) {
-	.header * {
-		width: 20%;
-	}
-	.header {
-		display: flex;
-		justify-items: stretch;
-		color: white;
-		background: #3c87c8;
-	}
-	.c_banner {
-		font-size: 17px;
-		font-weight: normal;
-		margin-bottom: 10px;
-		width: 100%;
-	}
-	.first {
-		padding: 11px 15px;
-	}
-	.day,
-	.month,
-	.year {
-		font-size: 14px;
-		line-height: 14px;
-		font-weight: normal;
-	}
-	.month {
-		text-transform: capitalize;
-	}
-	.money {
-		opacity: 0.2;
-		font-weight: bold;
-		font-size: 40px;
-		line-height: 30px;
-		margin-bottom: 10px;
-	}
-	.nbu_number {
-		font-size: 14px;
-		line-height: 14px;
-		font-weight: normal;
-	}
-	.nbu {
-		font-size: 14px;
-		font-weight: normal;
-		opacity: 0.5;
-		margin: 0;
-	}
-	.block {
-		padding-left: 2.25%;
-		padding-top: 5px;
-	}
+    .table {
+        grid-template-areas:
+            "f usd eur pln gbp"
+            ". s-usd s-eur s-pln s-gbp"
+            "h-usd c-usd c-eur c-pln c-gbp"
+            "h-usd c-usd c-eur c-pln c-gbp"
+            "h-usd c-usd c-eur c-pln c-gbp"
+            "h-usd c-usd c-eur c-pln c-gbp";
+    }
+    .block:not(.color),
+    .first {
+        background: #3c87c8;
+    }
+    .c_banner {
+        font-size: 17px;
+        font-weight: normal;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    .first {
+        padding: 11px 15px;
+    }
+    .day,
+    .month,
+    .year {
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: normal;
+    }
+    .month {
+        text-transform: capitalize;
+    }
+    .money {
+        opacity: 0.2;
+        font-weight: bold;
+        font-size: 40px;
+        line-height: 30px;
+        margin-bottom: 10px;
+    }
+    .nbu_number {
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: normal;
+    }
+    .nbu {
+        font-size: 14px;
+        font-weight: normal;
+        opacity: 0.5;
+        margin: 0;
+    }
+    .block {
+        padding-left: 15px;
+        padding-top: 5px;
+    }
 }
 
 @media screen and (min-width: 1300px) {
-	.header * {
-		width: 20%;
-	}
-	.header {
-		display: flex;
-		justify-items: stretch;
-		color: white;
-		background: #3c87c8;
-	}
-	.first {
-		padding: 25px 2.25%;
-	}
+    .first {
+        padding: 25px 40px;
+    }
 
-	.money {
-		font-size: 72px;
-		line-height: 50px;
-		opacity: 0.2;
-		font-weight: bold;
-		margin-bottom: 30px;
-	}
+    .money {
+        font-size: 72px;
+        line-height: 50px;
+        opacity: 0.2;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
 
-	.block {
-		padding-left: 2.25%;
-		padding-top: 10px;
-	}
+    .block {
+        padding-left: 40px;
+        padding-top: 10px;
+    }
 
-	.c_banner {
-		font-weight: normal;
-		font-size: 24px;
-		margin-bottom: 20px;
-		width: 100%;
-	}
+    .c_banner {
+        font-weight: normal;
+        font-size: 24px;
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: left;
+    }
 
-	.day {
-		font-size: 51px;
-		font-weight: bold;
-		line-height: 51px;
-	}
+    .day {
+        font-size: 51px;
+        font-weight: bold;
+        line-height: 51px;
+    }
 
-	.month,
-	.year {
-		font-size: 27px;
-		font-weight: bold;
-		line-height: 27px;
-		text-transform: uppercase;
-	}
+    .month,
+    .year {
+        font-size: 27px;
+        font-weight: bold;
+        line-height: 27px;
+        text-transform: uppercase;
+    }
 
-	.day,
-	.month,
-	.year {
-		display: block;
-	}
+    .day,
+    .month,
+    .year {
+        display: block;
+    }
 
-	.nbu {
-		display: block;
-		font-size: 27px;
-		font-weight: bold;
-		opacity: 0.5;
-	}
+    .nbu {
+        display: block;
+        font-size: 27px;
+        font-weight: bold;
+        opacity: 0.5;
+    }
 
-	.nbu_number {
-		color: white;
-		font-size: 72px;
-		line-height: 50px;
-		font-weight: bold;
-	}
-	.nbu_br {
-		display: inline-block;
-	}
+    .nbu_number {
+        font-size: 72px;
+        line-height: 50px;
+        font-weight: bold;
+        text-align: left;
+        width: 100%;
+    }
 }
