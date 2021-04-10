@@ -1,0 +1,16 @@
+{
+	"configurations": [
+		{
+			"name": "localhost",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:3000"
+		},
+		{
+			"name": "Launch index.html",
+			"type": "chrome",
+			"request": "launch",
+			"file": "${workspaceFolder}/index.html"
+		}
+	]
+}
