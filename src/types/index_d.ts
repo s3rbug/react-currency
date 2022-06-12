@@ -14,11 +14,6 @@ export type CurrencyStateType = {
 		gbp: string | undefined;
 	};
 	banksOrder: Array<BankOrderType>;
-	sort: {
-		type: SortEnum;
-		tradeType: TradeType;
-		currencyType: CurrencyType;
-	};
 };
 export enum CurrencyType {
 	USD = 0,

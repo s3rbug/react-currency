@@ -1,12 +1,10 @@
 import {
 	Bank,
-	BankOrderType,
 	BankType,
 	CurrencyStateType,
 	CurrencyType,
 	DateFormatType,
 	EmptyMoney,
-	MoneyType,
 	SortEnum,
 	TradeType,
 } from "./../../types/index_d";
@@ -77,11 +75,6 @@ const initialState = {
 			banks: [...banks],
 		},
 	],
-	sort: {
-		type: SortEnum.Default,
-		tradeType: TradeType.Buy,
-		currencyType: CurrencyType.USD,
-	},
 } as CurrencyStateType;
 
 export type CurrencyActionType = ActionType<typeof actions>;
@@ -128,94 +121,10 @@ const formatDate = (date: Date): string => {
 	return "помилка";
 };
 
-const sortByType = (
-	sortType: SortEnum,
-	tradeType: TradeType,
-	firstMoneyType: MoneyType,
-	secondMoneyType: MoneyType
-) => {
-	if (tradeType === TradeType.Buy) {
-		if (!firstMoneyType.buy || !secondMoneyType.buy) return 0;
-		if (sortType === SortEnum.Reversed)
-			return (
-				parseFloat(secondMoneyType.buy) - parseFloat(firstMoneyType.buy)
-			);
-		else
-			return (
-				parseFloat(firstMoneyType.buy) - parseFloat(secondMoneyType.buy)
-			);
-	} else {
-		if (!firstMoneyType.sell || !secondMoneyType.sell) return 0;
-		if (sortType === SortEnum.Reversed)
-			return (
-				parseFloat(secondMoneyType.sell) -
-				parseFloat(firstMoneyType.sell)
-			);
-		else
-			return (
-				parseFloat(firstMoneyType.sell) -
-				parseFloat(secondMoneyType.sell)
-			);
-	}
-};
-
-const compare = (
-	currencyType: CurrencyType,
-	tradeType: TradeType,
-	sortType: SortEnum
-) => (a: BankType, b: BankType) => {
-	if (sortType === SortEnum.Default) return a.type - b.type;
-	switch (currencyType) {
-		case CurrencyType.USD: {
-			return sortByType(
-				sortType,
-				tradeType,
-				a.currency.usd,
-				b.currency.usd
-			);
-		}
-		case CurrencyType.EUR: {
-			return sortByType(
-				sortType,
-				tradeType,
-				a.currency.eur,
-				b.currency.eur
-			);
-		}
-		case CurrencyType.PLN: {
-			return sortByType(
-				sortType,
-				tradeType,
-				a.currency.pln,
-				b.currency.pln
-			);
-		}
-		case CurrencyType.GBP: {
-			return sortByType(
-				sortType,
-				tradeType,
-				a.currency.gbp,
-				b.currency.gbp
-			);
-		}
-	}
-};
-
-const nextSort = (sortType: SortEnum) => {
-	switch (sortType) {
-		case SortEnum.Default:
-			return SortEnum.Sorted;
-		case SortEnum.Sorted:
-			return SortEnum.Reversed;
-		case SortEnum.Reversed:
-			return SortEnum.Sorted;
-	}
-};
-
 function getRandomInt(min: number, max: number): string {
 	min = Math.ceil(min);
 	max = Math.floor(max);
-	return (Math.floor(Math.random() * (max - min)) + min).toString(); //Максимум не включается, минимум включается
+	return (Math.floor(Math.random() * (max - min)) + min).toString(); 
 }
 
 const reducer = (state = initialState, action: CurrencyActionType) => {
@@ -321,32 +230,6 @@ const reducer = (state = initialState, action: CurrencyActionType) => {
 			const { currencyType, tradeType } = action.payload;
 			return {
 				...state,
-				banksOrder: [
-					{
-						banks: [
-							...state.banksOrder[0].banks.sort(
-								compare(
-									currencyType,
-									tradeType,
-									tradeType !== state.sort.tradeType &&
-										currencyType !== state.sort.currencyType
-										? SortEnum.Sorted
-										: nextSort(state.sort.type)
-								)
-							),
-						] as Array<BankType>,
-					},
-					...state.banksOrder.slice(1, state.banksOrder.length),
-				] as Array<BankOrderType>,
-				sort: {
-					type:
-						tradeType !== state.sort.tradeType &&
-						currencyType !== state.sort.currencyType
-							? SortEnum.Sorted
-							: nextSort(state.sort.type),
-					tradeType: tradeType,
-					currencyType: currencyType,
-				},
 			};
 		}
 		default: {

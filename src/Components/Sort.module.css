@@ -4,7 +4,7 @@
 	padding-bottom: 22px;
 }
 
-.wrapper > div {
+.wrapper>div {
 	flex-grow: 1;
 	color: #337ab7;
 	text-align: center;
@@ -57,7 +57,7 @@
 		padding-bottom: 9px;
 	}
 
-	.wrapper > div:nth-child(2) {
+	.wrapper>div:nth-child(2) {
 		text-align: right;
 		padding-right: 15px;
 	}
