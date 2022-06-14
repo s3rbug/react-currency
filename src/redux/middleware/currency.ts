@@ -96,33 +96,32 @@ const PromiseMono = async (dispatch: ThunkDispatchType) => {
 			const gbp = data.find(
 				(el) => el.currencyCodeA === CurrencyCode.GBP
 			);
-
 			dispatch(
 				setCurrency(
 					Bank.Mono,
 					usd
 						? {
-								buy: format(usd.rateBuy),
-								sell: format(usd.rateSell),
-						  }
+								buy: usd.rateBuy ? format(usd.rateBuy) : format(usd.rateCross),
+								sell: usd.rateSell ? format(usd.rateSell) : format(usd.rateCross),
+						}
 						: EmptyMoney,
 					eur
 						? {
-								buy: format(eur.rateBuy),
-								sell: format(eur.rateSell),
-						  }
+								buy: eur.rateBuy ? format(eur.rateBuy) : format(eur.rateCross),
+								sell: eur.rateSell ? format(eur.rateSell) : format(eur.rateCross),
+						}
 						: EmptyMoney,
 					pln
 						? {
-								buy: format(pln.rateBuy),
-								sell: format(pln.rateSell),
-						  }
+								buy: pln.rateBuy ? format(pln.rateBuy) : format(pln.rateCross),
+								sell: pln.rateSell ? format(pln.rateSell) : format(pln.rateCross),
+						}
 						: EmptyMoney,
 					gbp
 						? {
-								buy: format(gbp.rateBuy),
-								sell: format(gbp.rateSell),
-						  }
+								buy: gbp.rateBuy ? format(gbp.rateBuy) : format(gbp.rateCross),
+								sell: gbp.rateSell ? format(gbp.rateSell) : format(gbp.rateCross),
+						}
 						: EmptyMoney,
 					usd?.date
 				)

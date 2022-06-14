@@ -7,13 +7,16 @@ export type DateFormatType = { day: number; month: string; year: number };
 
 export type CurrencyStateType = {
 	currentDate: DateFormatType;
+	sortIcons: Array<SortIconType>;
+	sortIconsMobile: Array<SortIconType>;
 	NBU: {
 		usd: string | undefined;
 		eur: string | undefined;
 		pln: string | undefined;
 		gbp: string | undefined;
 	};
-	banksOrder: Array<BankOrderType>;
+	mobileBanksOrder: Array<Array<BankType>>;
+	banksOrder: Array<BankType>;
 };
 export enum CurrencyType {
 	USD = 0,
@@ -44,9 +47,9 @@ export type BankType = {
 	type: Bank;
 };
 
-export type BankOrderType = {
-	banks: Array<BankType>;
-};
+// export type BankOrderType = {
+// 	Array<BankType>;
+// };
 
 export type CurrencyValueType = {
 	usd: MoneyType;
@@ -84,6 +87,7 @@ export type AnswerMono = {
 	date: number;
 	rateBuy: number;
 	rateSell: number;
+	rateCross?: number;
 };
 
 export const CurrencyCode = {
@@ -98,6 +102,11 @@ export enum SortEnum {
 	Default = 0,
 	Sorted,
 	Reversed,
+}
+
+export type SortIconType = {
+	buy: SortEnum;
+	sell: SortEnum;
 }
 
 export enum TradeType {

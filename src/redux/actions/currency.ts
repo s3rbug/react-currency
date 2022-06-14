@@ -23,5 +23,14 @@ export const setCurrency = (
 
 export const sortCurrency = (
 	currencyType: CurrencyType,
-	tradeType: TradeType
-) => action(constants.SORT, { currencyType, tradeType });
+	tradeType: TradeType,
+	isMobile: boolean
+) => action(constants.SORT, { currencyType, tradeType, isMobile });
+
+export const changeSortIcon = (
+	currencyType: CurrencyType,
+	tradeType: TradeType,
+	isMobile: boolean
+	) => action(constants.CHANGE_SORT_ICON, {currencyType, tradeType, isMobile})
+
+export const resetIcons = () => action(constants.RESET_ICONS)

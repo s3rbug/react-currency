@@ -1,48 +1,21 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentDate } from "../redux/actions/currency";
-import { /*getCurrency,*/ getCurrencyNBU } from "../redux/middleware/currency";
+import { getCurrency, getCurrencyNBU } from "../redux/middleware/currency";
 import { useTypedSelector } from "../redux/reduxStore";
-import { Bank, CurrencyType, EmptyMoney } from "../types/index_d";
+import { CurrencyType } from "../types/index_d";
 import { combineStyles } from "../utils/helpers";
 import Currency from "./Currency";
 import CurrencyHeader from "./CurrencyHeader";
 import Sort from "./Sort";
 import classes from "./Table.module.css";
-import { setCurrency } from "../redux/actions/currency";
 
 const Table = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(setCurrentDate());
 		dispatch(getCurrencyNBU());
-		dispatch(
-			setCurrency(
-				Bank.Privat,
-				EmptyMoney,
-				EmptyMoney,
-				EmptyMoney,
-				EmptyMoney
-			)
-		);
-		dispatch(
-			setCurrency(
-				Bank.Privat24,
-				EmptyMoney,
-				EmptyMoney,
-				EmptyMoney,
-				EmptyMoney
-			)
-		);
-		dispatch(
-			setCurrency(
-				Bank.Mono,
-				EmptyMoney,
-				EmptyMoney,
-				EmptyMoney,
-				EmptyMoney
-			)
-		);
+		dispatch(getCurrency())
 	}, [dispatch]);
 	const currencyNBU = useTypedSelector((state) => state.currency.NBU);
 	const date = useTypedSelector((state) => state.currency.currentDate);
