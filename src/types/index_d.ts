@@ -9,12 +9,7 @@ export type CurrencyStateType = {
 	currentDate: DateFormatType;
 	sortIcons: Array<SortIconType>;
 	sortIconsMobile: Array<SortIconType>;
-	NBU: {
-		usd: string | undefined;
-		eur: string | undefined;
-		pln: string | undefined;
-		gbp: string | undefined;
-	};
+	NBU: NbuCurrencyType;
 	mobileBanksOrder: Array<Array<BankType>>;
 	banksOrder: Array<BankType>;
 };
@@ -23,6 +18,13 @@ export enum CurrencyType {
 	EUR,
 	PLN,
 	GBP,
+}
+
+export type NbuCurrencyType = {
+	usd: string | undefined;
+	eur: string | undefined;
+	pln: string | undefined;
+	gbp: string | undefined;
 }
 
 export type actions = typeof currencyActions;
@@ -46,10 +48,6 @@ export type BankType = {
 	currency: CurrencyValueType;
 	type: Bank;
 };
-
-// export type BankOrderType = {
-// 	Array<BankType>;
-// };
 
 export type CurrencyValueType = {
 	usd: MoneyType;

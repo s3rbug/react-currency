@@ -3,15 +3,11 @@ import Table from "./Components/Table";
 import store from "./redux/reduxStore";
 
 const App = () => {
-	return <Table />;
-};
-
-const MainApp = () => {
 	return (
 		<Provider store={store}>
-			<App />
+			<Table />
 		</Provider>
 	);
 };
 
-export default MainApp;
+export default App;

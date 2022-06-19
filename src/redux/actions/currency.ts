@@ -33,4 +33,3 @@ export const changeSortIcon = (
 	isMobile: boolean
 	) => action(constants.CHANGE_SORT_ICON, {currencyType, tradeType, isMobile})
 
-export const resetIcons = () => action(constants.RESET_ICONS)

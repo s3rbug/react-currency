@@ -1,4 +1,4 @@
-.wrapper > div {
+.wrapper>div {
     display: inline-block;
     width: 50%;
     text-align: center;
@@ -7,20 +7,21 @@
 }
 
 @media screen and (max-width: 990px) {
-    .wrapper > div {
+    .wrapper>div {
         padding-top: 15px;
         font-weight: normal;
         font-size: 15px;
         height: 59px;
     }
-    .wrapper > div:nth-child(2n) {
+
+    .wrapper>div:nth-child(2n) {
         text-align: right;
         padding-right: 15px;
     }
 }
 
 @media screen and (min-width: 990px) {
-    .wrapper > div {
+    .wrapper>div {
         font-weight: normal;
         font-size: 15px;
         height: 67px;
@@ -29,7 +30,7 @@
 }
 
 @media screen and (min-width: 1300px) {
-    .wrapper > div {
+    .wrapper>div {
         font-weight: bold;
         font-size: 20px;
         height: 97px;

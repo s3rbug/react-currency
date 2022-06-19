@@ -16,6 +16,7 @@ import PrivatImage from "../../assets/privat.png";
 import Privat24Image from "../../assets/privat24.png";
 import MonoImage from "../../assets/mono.jpg";
 
+// Variables for initial state
 const EmptyCurrency = {
 	usd: EmptyMoney,
 	eur: EmptyMoney,
@@ -23,7 +24,7 @@ const EmptyCurrency = {
 	gbp: EmptyMoney,
 };
 
-let banks = [
+const emptyBanks = [
 	{
 		alt: "ПриватБанк",
 		href: "https://privatbank.ua/",
@@ -50,45 +51,30 @@ let banks = [
 	},
 ] as Array<BankType>;
 
+const emptySortIcons =[
+		{ // USD
+			buy: SortEnum.Default,
+			sell: SortEnum.Default,
+		},
+		{ // EUR
+			buy: SortEnum.Default,
+			sell: SortEnum.Default,
+		}, 
+		{ // PLN
+			buy: SortEnum.Default,
+			sell: SortEnum.Default,
+		},  
+		{ // GBP
+			buy: SortEnum.Default,
+			sell: SortEnum.Default,
+		}  
+	] as Array<SortIconType>
+
 const initialState = {
 	currentDate: { day: 0, month: "", year: 0 } as DateFormatType,
-	banksOrder: [...banks],
-	sortIcons: [
-		{ // USD
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		},
-		{ // EUR
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		}, 
-		{ // PLN
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		},  
-		{ // GBP
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		}  
-	] as Array<SortIconType>,
-	sortIconsMobile: [
-		{ // USD
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		},
-		{ // EUR
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		}, 
-		{ // PLN
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		},  
-		{ // GBP
-			buy: SortEnum.Default,
-			sell: SortEnum.Default,
-		}  
-	] as Array<SortIconType>,
+	banksOrder: [...emptyBanks],
+	sortIcons: [...emptySortIcons],
+	sortIconsMobile: [...emptySortIcons],
 	NBU: {
 		usd: "",
 		eur: "",
@@ -98,26 +84,27 @@ const initialState = {
 	mobileBanksOrder: [
 		[
 			// USD
-			...banks
+			...emptyBanks
 		],
 		[
 			// EUR
-			...banks
+			...emptyBanks
 		],
 		[
 			// PLN
-			...banks
+			...emptyBanks
 		],
 		[
 			// GBP
-			...banks
+			...emptyBanks
 		],
 	] as Array<Array<BankType>>,
 } as CurrencyStateType;
 
 export type CurrencyActionType = ActionType<typeof actions>;
 
-const formatDate = (date: Date): string => {
+// Translate number of month into Ukrainian language
+const getMonthName = (date: Date): string => {
 	switch (date.getMonth()) {
 		case 0: {
 			return "січня";
@@ -159,31 +146,87 @@ const formatDate = (date: Date): string => {
 	return "помилка";
 };
 
-function getRandomInt(min: number, max: number): string {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return (Math.floor(Math.random() * (max - min)) + min).toString(); 
+// Format date to show
+const formatDate = (date: Date): string => {
+	return ((date.getHours() < 10 ? "0" : "") +
+			date.getHours() + ":" +
+			(date.getMinutes() < 10 ? "0" : "") +
+			date.getMinutes())
 }
 
-function getNextIcon(icon: SortEnum): SortEnum {
+// Get value of the next sort icon when clicked
+const getNextIcon = (icon: SortEnum): SortEnum => {
 	return icon === SortEnum.Reversed ? SortEnum.Sorted : icon + 1
+}
+
+// Compare two BankType object to sort them
+const compareBanksCurrency = (bank1: BankType, bank2: BankType, tradeType: TradeType, currencyType: CurrencyType, sortIcon: SortIconType): number => {
+	let buy1, buy2,
+		sell1, sell2
+	switch(currencyType){
+		case CurrencyType.USD: {
+			buy1 = bank1.currency.usd.buy
+			sell1 = bank1.currency.usd.sell
+			buy2 = bank2.currency.usd.buy
+			sell2 = bank2.currency.usd.sell
+			break
+		}
+		case CurrencyType.EUR: {
+			buy1 = bank1.currency.eur.buy
+			sell1 = bank1.currency.eur.sell
+			buy2 = bank2.currency.eur.buy
+			sell2 = bank2.currency.eur.sell
+			break
+		}
+		case CurrencyType.PLN: {
+			buy1 = bank1.currency.pln.buy
+			sell1 = bank1.currency.pln.sell
+			buy2 = bank2.currency.pln.buy
+			sell2 = bank2.currency.pln.sell
+			break
+		}
+		case CurrencyType.GBP:{
+			buy1 = bank1.currency.gbp.buy
+			sell1 = bank1.currency.gbp.sell
+			buy2 = bank2.currency.gbp.buy
+			sell2 = bank2.currency.gbp.sell
+			break
+		}
+	}
+	if(tradeType === TradeType.Buy){
+		if(!buy1 || !buy2 || sortIcon.buy === SortEnum.Default)
+			return 0
+		if(sortIcon.buy === SortEnum.Sorted)
+			return parseFloat(buy1) - parseFloat(buy2)
+		else
+			return parseFloat(buy2) - parseFloat(buy1)
+		
+	}
+	else{
+		if(!sell1 || !sell2 || sortIcon.sell === SortEnum.Default)
+			return 0
+			if(sortIcon.sell === SortEnum.Sorted)
+			return parseFloat(sell1) - parseFloat(sell2)
+		else
+			return parseFloat(sell2) - parseFloat(sell1)
+	}
 }
 
 const reducer = (state = initialState, action: CurrencyActionType) => {
 	switch (action.type) {
-		case constants.SET_CURRENT_DATE: {
+		case constants.SET_CURRENT_DATE: {	// Set current date in the date widget
 			const date = new Date();
 			return {
 				...state,
 				currentDate: {
 					day: date.getDate(),
-					month: formatDate(date),
+					month: getMonthName(date),
 					year: date.getFullYear(),
 				} as DateFormatType,
 			};
 		}
-		case constants.SET_NBU: {
-			let { currencyType, value } = action.payload;
+		case constants.SET_NBU: {	// Set NBU (National Bank of Ukraine) currency value
+			const { currencyType, value } = action.payload;
 			return {
 				...state,
 				NBU: {
@@ -206,51 +249,56 @@ const reducer = (state = initialState, action: CurrencyActionType) => {
 				},
 			};
 		}
-		case constants.SET_CURRENCY: {
-			let { bankType, usd, eur, pln, gbp, time } = action.payload;
+		case constants.SET_CURRENCY: {	// Set currency to chosen bank
+			const { bankType, usd, eur, pln, gbp, time } = action.payload;
 			let date = new Date();
 			if (time) date.setUTCSeconds(time);
-			banks = banks.map((bank) => {
-				if (bank.type === bankType) {
-					return {
-						...bank,
-						time:
-							(date.getHours() < 10 ? "0" : "") +
-							date.getHours() +
-							":" +
-							(date.getMinutes() < 10 ? "0" : "") +
-							date.getMinutes(),
-						currency: {
-							usd: { ...usd },
-							eur: { ...eur },
-							pln: { ...pln },
-							gbp: { ...gbp },
-						},
-					};
-				}
-				return bank;
-			});
 			return {
 				...state,
-				banksOrder: [...banks],
+				banksOrder: [...state.banksOrder.map(bank => {
+					if(bank.type === bankType){
+						return {
+								...bank,
+								time: formatDate(date),
+								currency: {
+									usd: { ...usd },
+									eur: { ...eur },
+									pln: { ...pln },
+									gbp: { ...gbp },
+								},
+							};
+					}
+					else{
+						return {...bank}
+					}
+				})],
 				mobileBanksOrder: [
-					[
-						...banks
-					],
-					[
-						...banks
-					],
-					[
-						...banks
-					],
-					[
-						...banks
-					],
+					...state.mobileBanksOrder.map(banks => {
+						return [...banks.map(bank => {
+							if(bank.type === bankType){
+								return {
+									...bank,
+									time: formatDate(date),
+									currency: {
+										usd: { ...usd },
+										eur: { ...eur },
+										pln: { ...pln },
+										gbp: { ...gbp },
+								},
+								}
+							}
+							else{
+								return {
+								...bank
+								}
+							}
+						})]
+					})
 				],
 				
 			};
 		}
-		case constants.SORT: {
+		case constants.SORT: {	// Sort banks
 			const { currencyType, tradeType, isMobile } = action.payload;
 			return {
 				...state,
@@ -258,89 +306,20 @@ const reducer = (state = initialState, action: CurrencyActionType) => {
 				[...state.banksOrder] :
 				[...state.banksOrder.sort((bank1, bank2) => {
 					switch(currencyType){
-						case CurrencyType.USD:
-							if(!bank1.currency.usd.buy || !bank2.currency.usd.buy ||
-								!bank1.currency.usd.sell || !bank2.currency.usd.sell)
-								return 0
-							if(tradeType === TradeType.Buy){
-								if(state.sortIcons[currencyType].buy === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].buy === SortEnum.Sorted)
-									return parseFloat(bank1.currency.usd.buy) - parseFloat(bank2.currency.usd.buy)
-								else
-									return parseFloat(bank2.currency.usd.buy) - parseFloat(bank1.currency.usd.buy)
-							}
-							else{
-								if(state.sortIcons[currencyType].sell === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].sell === SortEnum.Sorted)
-									return parseFloat(bank1.currency.usd.sell) - parseFloat(bank2.currency.usd.sell)
-								else
-									return parseFloat(bank2.currency.usd.sell) - parseFloat(bank1.currency.usd.sell)
-							}
-						case CurrencyType.EUR:
-							if(!bank1.currency.eur.buy || !bank2.currency.eur.buy ||
-								!bank1.currency.eur.sell || !bank2.currency.eur.sell)
-								return 0
-							if(tradeType === TradeType.Buy){
-								if(state.sortIcons[currencyType].buy === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].buy === SortEnum.Sorted)
-									return parseFloat(bank1.currency.eur.buy) - parseFloat(bank2.currency.eur.buy)
-								else
-									return parseFloat(bank2.currency.eur.buy) - parseFloat(bank1.currency.eur.buy)
-							}
-							else{
-								if(state.sortIcons[currencyType].sell === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].sell === SortEnum.Sorted)
-									return parseFloat(bank1.currency.eur.sell) - parseFloat(bank2.currency.eur.sell)
-								else
-									return parseFloat(bank2.currency.eur.sell) - parseFloat(bank1.currency.eur.sell)
-							}
-						case CurrencyType.PLN:
-							if(!bank1.currency.pln.buy || !bank2.currency.pln.buy ||
-								!bank1.currency.pln.sell || !bank2.currency.pln.sell)
-								return 0
-							if(tradeType === TradeType.Buy){
-								if(state.sortIcons[currencyType].buy === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].buy === SortEnum.Sorted)
-									return parseFloat(bank1.currency.pln.buy) - parseFloat(bank2.currency.pln.buy)
-								else
-									return parseFloat(bank2.currency.pln.buy) - parseFloat(bank1.currency.pln.buy)
-							}
-							else{
-								if(state.sortIcons[currencyType].sell === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].sell === SortEnum.Sorted)
-									return parseFloat(bank1.currency.pln.sell) - parseFloat(bank2.currency.pln.sell)
-								else
-									return parseFloat(bank2.currency.pln.sell) - parseFloat(bank1.currency.pln.sell)
-							}
-						case CurrencyType.GBP:
-							if(!bank1.currency.gbp.buy || !bank2.currency.gbp.buy ||
-								!bank1.currency.gbp.sell || !bank2.currency.gbp.sell)
-								return 0
-							if(tradeType === TradeType.Buy){
-								if(state.sortIcons[currencyType].buy === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].buy === SortEnum.Sorted)
-									return parseFloat(bank1.currency.gbp.buy) - parseFloat(bank2.currency.gbp.buy)
-								else
-									return parseFloat(bank2.currency.gbp.buy) - parseFloat(bank1.currency.gbp.buy)
-							}
-							else{
-								if(state.sortIcons[currencyType].sell === SortEnum.Default)
-									return 0
-								else if(state.sortIcons[currencyType].sell === SortEnum.Sorted)
-									return parseFloat(bank1.currency.gbp.sell) - parseFloat(bank2.currency.gbp.sell)
-								else
-									return parseFloat(bank2.currency.gbp.sell) - parseFloat(bank1.currency.gbp.sell)
-							}
+						case CurrencyType.USD: {
+							return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.USD, state.sortIcons[CurrencyType.USD])
+						}
+						case CurrencyType.EUR: {
+							return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.EUR, state.sortIcons[CurrencyType.EUR])
+						}
+						case CurrencyType.PLN: {
+							return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.PLN, state.sortIcons[CurrencyType.PLN])
+						}
+						case CurrencyType.GBP: {
+							return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.GBP, state.sortIcons[CurrencyType.GBP])
+						}
 						default:
 							return 0
-
 					}
 				})],
 				mobileBanksOrder: !isMobile ?
@@ -349,89 +328,20 @@ const reducer = (state = initialState, action: CurrencyActionType) => {
 					if(banksId === currencyType){
 						return banks.sort((bank1, bank2) => {
 							switch(currencyType){
-								case CurrencyType.USD:
-									if(!bank1.currency.usd.buy || !bank2.currency.usd.buy ||
-										!bank1.currency.usd.sell || !bank2.currency.usd.sell)
-										return 0
-									if(tradeType === TradeType.Buy){
-										if(state.sortIconsMobile[currencyType].buy === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].buy === SortEnum.Sorted)
-											return parseFloat(bank1.currency.usd.buy) - parseFloat(bank2.currency.usd.buy)
-										else
-											return parseFloat(bank2.currency.usd.buy) - parseFloat(bank1.currency.usd.buy)
-									}
-									else{
-										if(state.sortIconsMobile[currencyType].sell === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].sell === SortEnum.Sorted)
-											return parseFloat(bank1.currency.usd.sell) - parseFloat(bank2.currency.usd.sell)
-										else
-											return parseFloat(bank2.currency.usd.sell) - parseFloat(bank1.currency.usd.sell)
-									}
-								case CurrencyType.EUR:
-									if(!bank1.currency.eur.buy || !bank2.currency.eur.buy ||
-										!bank1.currency.eur.sell || !bank2.currency.eur.sell)
-										return 0
-									if(tradeType === TradeType.Buy){
-										if(state.sortIconsMobile[currencyType].buy === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].buy === SortEnum.Sorted)
-											return parseFloat(bank1.currency.eur.buy) - parseFloat(bank2.currency.eur.buy)
-										else
-											return parseFloat(bank2.currency.eur.buy) - parseFloat(bank1.currency.eur.buy)
-									}
-									else{
-										if(state.sortIconsMobile[currencyType].sell === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].sell === SortEnum.Sorted)
-											return parseFloat(bank1.currency.eur.sell) - parseFloat(bank2.currency.eur.sell)
-										else
-											return parseFloat(bank2.currency.eur.sell) - parseFloat(bank1.currency.eur.sell)
-									}
-								case CurrencyType.PLN:
-									if(!bank1.currency.pln.buy || !bank2.currency.pln.buy ||
-										!bank1.currency.pln.sell || !bank2.currency.pln.sell)
-										return 0
-									if(tradeType === TradeType.Buy){
-										if(state.sortIconsMobile[currencyType].buy === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].buy === SortEnum.Sorted)
-											return parseFloat(bank1.currency.pln.buy) - parseFloat(bank2.currency.pln.buy)
-										else
-											return parseFloat(bank2.currency.pln.buy) - parseFloat(bank1.currency.pln.buy)
-									}
-									else{
-										if(state.sortIconsMobile[currencyType].sell === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].sell === SortEnum.Sorted)
-											return parseFloat(bank1.currency.pln.sell) - parseFloat(bank2.currency.pln.sell)
-										else
-											return parseFloat(bank2.currency.pln.sell) - parseFloat(bank1.currency.pln.sell)
-									}
-								case CurrencyType.GBP:
-									if(!bank1.currency.gbp.buy || !bank2.currency.gbp.buy ||
-										!bank1.currency.gbp.sell || !bank2.currency.gbp.sell)
-										return 0
-									if(tradeType === TradeType.Buy){
-										if(state.sortIconsMobile[currencyType].buy === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].buy === SortEnum.Sorted)
-											return parseFloat(bank1.currency.gbp.buy) - parseFloat(bank2.currency.gbp.buy)
-										else
-											return parseFloat(bank2.currency.gbp.buy) - parseFloat(bank1.currency.gbp.buy)
-									}
-									else{
-										if(state.sortIconsMobile[currencyType].sell === SortEnum.Default)
-											return 0
-										else if(state.sortIconsMobile[currencyType].sell === SortEnum.Sorted)
-											return parseFloat(bank1.currency.gbp.sell) - parseFloat(bank2.currency.gbp.sell)
-										else
-											return parseFloat(bank2.currency.gbp.sell) - parseFloat(bank1.currency.gbp.sell)
-									}
+								case CurrencyType.USD: {
+									return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.USD, state.sortIconsMobile[CurrencyType.USD])
+								}
+								case CurrencyType.EUR: {
+									return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.EUR, state.sortIconsMobile[CurrencyType.EUR])
+								}
+								case CurrencyType.PLN: {
+									return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.PLN, state.sortIconsMobile[CurrencyType.PLN])
+								}
+								case CurrencyType.GBP: {
+									return compareBanksCurrency(bank1, bank2, tradeType, CurrencyType.GBP, state.sortIconsMobile[CurrencyType.GBP])
+								}
 								default:
 									return 0
-		
 							}
 						})
 					}
@@ -441,7 +351,7 @@ const reducer = (state = initialState, action: CurrencyActionType) => {
 				})]
 			};
 		}
-		case constants.CHANGE_SORT_ICON: {
+		case constants.CHANGE_SORT_ICON: {	// Change sort icons
 			const {currencyType, tradeType, isMobile} = action.payload
 			return {
 				...state,
@@ -483,16 +393,7 @@ const reducer = (state = initialState, action: CurrencyActionType) => {
 					})]
 			}
 		}
-		case constants.RESET_ICONS: {
-			return {
-				...state,
-				sortIcons: [...state.sortIcons.map(_ => ({
-					buy: SortEnum.Default,
-					sell: SortEnum.Default
-				}))]
-			}
-		}
-		default: {
+		default: {	// Return state without changes if incorrect constant
 			return { ...state };
 		}
 	}

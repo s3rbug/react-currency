@@ -11,7 +11,7 @@ import {
 	CurrencyCode,
 } from "./../../types/index_d";
 
-const PromiseNBU = async (
+const PromiseNBU = async (	// Promise to get one NBU currency
 	dispatch: ThunkDispatchType,
 	currencyType: CurrencyType
 ) => {
@@ -23,7 +23,7 @@ const PromiseNBU = async (
 		});
 };
 
-export const getCurrencyNBU = () => async (dispatch: ThunkDispatchType) => {
+export const getCurrencyNBU = () => async (dispatch: ThunkDispatchType) => {	// Promise to get all NBU currency
 	return Promise.all([
 		PromiseNBU(dispatch, CurrencyType.USD),
 		PromiseNBU(dispatch, CurrencyType.EUR),
@@ -32,13 +32,13 @@ export const getCurrencyNBU = () => async (dispatch: ThunkDispatchType) => {
 	]);
 };
 
-const format = (el: string | number | undefined): string => {
+const format = (el: string | number | undefined): string => {	// Format the currency value
 	if (!el) return "—";
 	if (typeof el === "number") return el.toFixed(2).toString();
 	return parseFloat(el).toFixed(2).toString();
 };
 
-const PromisePrivat = async (
+const PromisePrivat = async (	// Promise to get Privat currency
 	dispatch: ThunkDispatchType,
 	bankType: Bank.Privat | Bank.Privat24
 ) => {
@@ -76,7 +76,7 @@ const PromisePrivat = async (
 		});
 };
 
-const PromiseMono = async (dispatch: ThunkDispatchType) => {
+const PromiseMono = async (dispatch: ThunkDispatchType) => {	// Promise to get Monobank currency
 	return currencyApi
 		.getCurrency(Bank.Mono)
 		.then((response) => response.data)
@@ -96,31 +96,34 @@ const PromiseMono = async (dispatch: ThunkDispatchType) => {
 			const gbp = data.find(
 				(el) => el.currencyCodeA === CurrencyCode.GBP
 			);
+			const chooseRate = (defaultRate: number | undefined, rateCross: number | undefined) => {
+				return defaultRate ? format(defaultRate) : format(rateCross)
+			} 
 			dispatch(
 				setCurrency(
 					Bank.Mono,
 					usd
 						? {
-								buy: usd.rateBuy ? format(usd.rateBuy) : format(usd.rateCross),
-								sell: usd.rateSell ? format(usd.rateSell) : format(usd.rateCross),
+							buy: chooseRate(usd.rateBuy, usd.rateCross),
+							sell: chooseRate(usd.rateSell, usd.rateCross),
 						}
 						: EmptyMoney,
 					eur
 						? {
-								buy: eur.rateBuy ? format(eur.rateBuy) : format(eur.rateCross),
-								sell: eur.rateSell ? format(eur.rateSell) : format(eur.rateCross),
+							buy: chooseRate(eur.rateBuy, eur.rateCross),
+							sell: chooseRate(eur.rateSell, eur.rateCross),
 						}
 						: EmptyMoney,
 					pln
 						? {
-								buy: pln.rateBuy ? format(pln.rateBuy) : format(pln.rateCross),
-								sell: pln.rateSell ? format(pln.rateSell) : format(pln.rateCross),
+							buy: chooseRate(pln.rateBuy, pln.rateCross),
+							sell: chooseRate(pln.rateSell, pln.rateCross),
 						}
 						: EmptyMoney,
 					gbp
 						? {
-								buy: gbp.rateBuy ? format(gbp.rateBuy) : format(gbp.rateCross),
-								sell: gbp.rateSell ? format(gbp.rateSell) : format(gbp.rateCross),
+							buy: chooseRate(gbp.rateBuy, gbp.rateCross),
+							sell: chooseRate(gbp.rateSell, gbp.rateCross),
 						}
 						: EmptyMoney,
 					usd?.date
@@ -129,7 +132,7 @@ const PromiseMono = async (dispatch: ThunkDispatchType) => {
 		});
 };
 
-export const getCurrency = () => async (dispatch: ThunkDispatchType) => {
+export const getCurrency = () => async (dispatch: ThunkDispatchType) => {	// Promise to get all banks currency
 	return Promise.all([
 		PromisePrivat(dispatch, Bank.Privat),
 		PromisePrivat(dispatch, Bank.Privat24),

@@ -1,13 +1,8 @@
+import clsx from "clsx";
 import { useMediaQuery } from "react-responsive";
 import { useTypedSelector } from "../redux/reduxStore";
 import { CurrencyType } from "../types/index_d";
-import { combineStyles } from "../utils/helpers";
 import classes from "./CurrencyHeader.module.css";
-
-type PropsType = {
-	className: string;
-	currencyType: CurrencyType;
-};
 
 type BankPropsType = {
 	href: string;
@@ -34,6 +29,11 @@ const Bank = ({ href, alt, time, image }: BankPropsType) => {
 	);
 };
 
+type PropsType = {
+	className: string;
+	currencyType: CurrencyType;
+};
+
 const CurrencyHeader = ({ className, currencyType }: PropsType) => {
 	const isMobile = useMediaQuery({
 		query: "(max-width: 990px)"
@@ -43,8 +43,8 @@ const CurrencyHeader = ({ className, currencyType }: PropsType) => {
 	if(!isMobile)
 		return (
 			<div className={className}>
-				<div className={combineStyles(classes.wrapper, className)}>
-					{banks.map((bank) => {
+				<div className={clsx(classes.wrapper, className)}>{
+				banks.map((bank) => {
 						return (
 							<Bank
 								key={bank.alt}
@@ -61,8 +61,7 @@ const CurrencyHeader = ({ className, currencyType }: PropsType) => {
 	else
 		return (
 			<div className={className}>
-				<div className={combineStyles(classes.wrapper, className)}>
-					{
+				<div className={clsx(classes.wrapper, className)}>{
 					mobileBanks.map((banks, banksId) => {
 						if(currencyType === banksId){
 							return (
